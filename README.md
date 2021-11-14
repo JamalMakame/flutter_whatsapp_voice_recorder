@@ -40,13 +40,13 @@ If I had more time I would have done the following:<br>
 APK of the app can be found under apk folder. Here are few screenshots and screen recording to showcase the app:
 <br><br>
 
-List UI:    
+List UI:
 <img src="screenshots_and_recordings/list-ui.jpg" alt="WhatsApp Recorder List" width="200"/>
-Recording UI:   
+Recording UI:
 <img src="screenshots_and_recordings/recording-ui.jpg" alt="WhatsApp Recorder Recording UI" width="200"/>
 <br><br>
 
-Playing UI:   
+Playing UI:
 <img src="screenshots_and_recordings/playing-ui.jpg" alt="WhatsApp Recorder Playing UI" width="200"/>
-Demo Recording: 
+Demo Recording:
 <img src="screenshots_and_recordings/app-demo.gif" alt="WhatsApp Recorder Demo" width="200"/>
