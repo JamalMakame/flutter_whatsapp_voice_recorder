@@ -8,12 +8,16 @@ class RecordingMicWidget extends StatefulWidget {
     required this.onHorizontalScrollComplete,
     required this.onLongPress,
     required this.onLongPressCancel,
+    required this.onSend,
+    required this.onTapCancel,
   }) : super(key: key);
 
   final VoidCallback onVerticalScrollComplete;
   final VoidCallback onHorizontalScrollComplete;
   final VoidCallback onLongPress;
   final VoidCallback onLongPressCancel;
+  final VoidCallback onSend;
+  final VoidCallback onTapCancel;
 
   @override
   _RecordingMicWidgetState createState() => _RecordingMicWidgetState();
@@ -39,12 +43,15 @@ class _RecordingMicWidgetState extends State<RecordingMicWidget> {
         Positioned(
           bottom: 0,
           right: 50,
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50.00),
-                color: Colors.white),
-            width: screenSize.width - 74,
-            height: 50,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50.00),
+                  color: Colors.white),
+              width: screenSize.width - 78,
+              height: 50,
+            ),
           ),
         ),
         Positioned(
@@ -68,6 +75,28 @@ class _RecordingMicWidgetState extends State<RecordingMicWidget> {
               direction: ShimmerDirection.rtl,
               baseColor: Colors.grey.shade500,
               highlightColor: Colors.grey.shade300,
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 15,
+          right: 70,
+          child: Visibility(
+            visible: isVerticalActionComplete,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  isVerticalActionComplete = false;
+                });
+                widget.onTapCancel();
+              },
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.red,
+                ),
+              ),
             ),
           ),
         ),
@@ -98,6 +127,16 @@ class _RecordingMicWidgetState extends State<RecordingMicWidget> {
           bottom: micDy,
           right: micDx,
           child: GestureDetector(
+            // this is used when the recording is locked and you want to save the audio
+            onTap: () {
+              if (isVerticalActionComplete) {
+                setState(() {
+                  isVerticalActionComplete = false;
+                });
+                widget.onSend();
+              }
+            },
+
             onLongPress: () {
               widget.onLongPress();
               isVerticalActionComplete = false;
@@ -109,6 +148,7 @@ class _RecordingMicWidgetState extends State<RecordingMicWidget> {
                 showSwipeOptions = true;
               });
             },
+
             onLongPressEnd: (LongPressEndDetails lg) {
               setState(() {
                 micWidth = 50;
@@ -121,9 +161,11 @@ class _RecordingMicWidgetState extends State<RecordingMicWidget> {
                 widget.onLongPressCancel();
               }
             },
+
             onLongPressMoveUpdate: (LongPressMoveUpdateDetails longPressData) {
               longPressUpdate(longPressData);
             },
+
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50.00),
@@ -131,7 +173,7 @@ class _RecordingMicWidgetState extends State<RecordingMicWidget> {
               width: micWidth,
               height: micheight,
               child: Icon(
-                Icons.mic,
+                isVerticalActionComplete ? Icons.send : Icons.mic,
                 color: Colors.teal[50],
               ),
             ),

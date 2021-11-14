@@ -1,7 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fivepointers.flutter_whatsapp_voice_recorder">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
    <application
-        android:label="flutter_whatsapp_voice_recorder"
+        android:label="WhatsApp Voice Recorder"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_whatsapp_voice_recorder/ui/feature/home/screens/home_screen.dart';
 
-void main() {
+import 'app/service_locator.dart' as service_locator;
+import 'ui/feature/home/screens/home_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await service_locator.init();
   runApp(const MyApp());
 }
 
