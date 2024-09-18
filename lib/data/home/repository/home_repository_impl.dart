@@ -8,12 +8,12 @@ import '../datasources/home_datastore_factory.dart';
 import '../models/audio_model.dart';
 
 class HomeRepositoryImpl extends HomeRepository {
-  late HomeDataStore _homeDataStore;
-  late HomeDataStoreFactory _homeDataStoreFactory;
-
   HomeRepositoryImpl({required HomeDataStoreFactory homeDataStoreFactory}) {
     _homeDataStoreFactory = homeDataStoreFactory;
   }
+
+  late HomeDataStore _homeDataStore;
+  late HomeDataStoreFactory _homeDataStoreFactory;
 
   @override
   Future<Either<Failure, List<Audio>>> getAudioList() async {

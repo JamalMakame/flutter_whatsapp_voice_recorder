@@ -12,13 +12,13 @@ class Audio {
     required this.isPlaying,
   });
 
-  late String filePath;
-  late bool isPlaying;
-
   factory Audio.fromJson(Map<String, dynamic> json) => Audio(
         filePath: json["filePath"],
         isPlaying: json["isPlaying"],
       );
+
+  late String filePath;
+  late bool isPlaying;
 
   Map<String, dynamic> toJson() => {
         "filePath": filePath,

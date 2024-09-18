@@ -12,28 +12,100 @@ class RecordingMicWidget extends StatefulWidget {
     required this.onTapCancel,
   }) : super(key: key);
 
-  final VoidCallback onVerticalScrollComplete;
   final VoidCallback onHorizontalScrollComplete;
   final VoidCallback onLongPress;
   final VoidCallback onLongPressCancel;
   final VoidCallback onSend;
   final VoidCallback onTapCancel;
+  final VoidCallback onVerticalScrollComplete;
 
   @override
   _RecordingMicWidgetState createState() => _RecordingMicWidgetState();
 }
 
 class _RecordingMicWidgetState extends State<RecordingMicWidget> {
+  bool isHorizontalActionComplete = false;
+  bool isVerticalActionComplete = false;
+  bool isVerticalScroll = true;
   double micDx = 0;
   double micDy = 0;
-
   double micWidth = 50;
   double micheight = 50;
-
-  bool isVerticalScroll = true;
   bool showSwipeOptions = false;
-  bool isVerticalActionComplete = false;
-  bool isHorizontalActionComplete = false;
+
+  void longPressUpdate(LongPressMoveUpdateDetails longPressData) {
+    //determine the direction of the swipe
+    if (longPressData.localPosition.direction > 1) {
+      isVerticalScroll = false;
+    } else {
+      isVerticalScroll = true;
+    }
+
+    // handle the swipe data and move the mic in vertical direction
+    if (isVerticalScroll) {
+      if (longPressData.localPosition.dy < 0) {
+        if (longPressData.localPosition.dy > -100) {
+          setState(() {
+            micDy = -longPressData.localPosition.dy;
+          });
+        } else {
+          // reset only once
+          if (showSwipeOptions) {
+            isVerticalActionComplete = true;
+            widget.onVerticalScrollComplete();
+            showSwipeOptions = false;
+            resetMicPosition();
+          }
+        }
+      } else {
+        resetMicPosition();
+      }
+    }
+
+    // handle the swipe data and move the mic in horizontal direction
+    if (!isVerticalScroll) {
+      if (longPressData.localPosition.dx < 0) {
+        if (longPressData.localPosition.dx > -150) {
+          setState(() {
+            micDx = -longPressData.localPosition.dx;
+          });
+        } else {
+          // reset only once
+          if (showSwipeOptions) {
+            isHorizontalActionComplete = true;
+            widget.onHorizontalScrollComplete();
+            showSwipeOptions = false;
+            resetMicPosition();
+          }
+        }
+      } else {
+        resetMicPosition();
+      }
+    }
+
+    // reset mic size when the swipe reaches the vertical bounds
+    if (longPressData.localPosition.dy < -100 && micheight != 50) {
+      setState(() {
+        micWidth = 50;
+        micheight = 50;
+      });
+    }
+
+    // reset mic size when the swipe reaches the horizontal bounds
+    if (longPressData.localPosition.dy < -150 && micWidth != 50) {
+      setState(() {
+        micWidth = 50;
+        micheight = 50;
+      });
+    }
+  }
+
+  void resetMicPosition() {
+    setState(() {
+      micDx = 0;
+      micDy = 0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,79 +253,5 @@ class _RecordingMicWidgetState extends State<RecordingMicWidget> {
         ),
       ],
     );
-  }
-
-  void longPressUpdate(LongPressMoveUpdateDetails longPressData) {
-    //determine the direction of the swipe
-    if (longPressData.localPosition.direction > 1) {
-      isVerticalScroll = false;
-    } else {
-      isVerticalScroll = true;
-    }
-
-    // handle the swipe data and move the mic in vertical direction
-    if (isVerticalScroll) {
-      if (longPressData.localPosition.dy < 0) {
-        if (longPressData.localPosition.dy > -100) {
-          setState(() {
-            micDy = -longPressData.localPosition.dy;
-          });
-        } else {
-          // reset only once
-          if (showSwipeOptions) {
-            isVerticalActionComplete = true;
-            widget.onVerticalScrollComplete();
-            showSwipeOptions = false;
-            resetMicPosition();
-          }
-        }
-      } else {
-        resetMicPosition();
-      }
-    }
-
-    // handle the swipe data and move the mic in horizontal direction
-    if (!isVerticalScroll) {
-      if (longPressData.localPosition.dx < 0) {
-        if (longPressData.localPosition.dx > -150) {
-          setState(() {
-            micDx = -longPressData.localPosition.dx;
-          });
-        } else {
-          // reset only once
-          if (showSwipeOptions) {
-            isHorizontalActionComplete = true;
-            widget.onHorizontalScrollComplete();
-            showSwipeOptions = false;
-            resetMicPosition();
-          }
-        }
-      } else {
-        resetMicPosition();
-      }
-    }
-
-    // reset mic size when the swipe reaches the vertical bounds
-    if (longPressData.localPosition.dy < -100 && micheight != 50) {
-      setState(() {
-        micWidth = 50;
-        micheight = 50;
-      });
-    }
-
-    // reset mic size when the swipe reaches the horizontal bounds
-    if (longPressData.localPosition.dy < -150 && micWidth != 50) {
-      setState(() {
-        micWidth = 50;
-        micheight = 50;
-      });
-    }
-  }
-
-  void resetMicPosition() {
-    setState(() {
-      micDx = 0;
-      micDy = 0;
-    });
   }
 }

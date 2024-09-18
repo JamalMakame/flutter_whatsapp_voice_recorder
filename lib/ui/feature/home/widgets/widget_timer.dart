@@ -15,6 +15,12 @@ class _TimerWidgetState extends State<TimerWidget> {
   Timer? timer;
 
   @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     startTimer();
@@ -31,11 +37,6 @@ class _TimerWidgetState extends State<TimerWidget> {
       final seconds = duration.inSeconds + addSeconds;
       duration = Duration(seconds: seconds);
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return buildTime();
   }
 
   Widget buildTime() {
@@ -61,8 +62,7 @@ class _TimerWidgetState extends State<TimerWidget> {
   }
 
   @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return buildTime();
   }
 }

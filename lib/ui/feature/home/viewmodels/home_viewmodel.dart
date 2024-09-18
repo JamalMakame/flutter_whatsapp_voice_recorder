@@ -8,14 +8,19 @@ import '../../../../domain/feature/home/services/sound_service.dart';
 
 /// This class is responsible for all the business logic related to the Home Screen
 class HomeViewModel extends BaseViewModel {
-  final SoundService _soundService = locator();
-  final HomeService _homeService = locator();
   List<Audio> audioList = [];
-
   bool isRecording = false;
 
-  late Audio? _currentRecordingAudio = null;
   late Audio? _currentPlayingAudio = null;
+  late Audio? _currentRecordingAudio = null;
+  final HomeService _homeService = locator();
+  final SoundService _soundService = locator();
+
+  @override
+  void dispose() {
+    _soundService.dispose();
+    super.dispose();
+  }
 
   void permissionCheckAndInitRecorder() async {
     final status = await Permission.microphone.request();
@@ -128,11 +133,5 @@ class HomeViewModel extends BaseViewModel {
     _currentPlayingAudio = null;
 
     notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _soundService.dispose();
-    super.dispose();
   }
 }
